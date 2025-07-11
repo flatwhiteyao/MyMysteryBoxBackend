@@ -3,6 +3,7 @@ import { Configuration, App } from '@midwayjs/core';
 import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
+import * as crossDomain from '@midwayjs/cross-domain';
 import { join } from 'path';
 import { ReportMiddleware } from './middleware/report.middleware';
 import createUserTable from './migration/createUserTable';
@@ -11,6 +12,7 @@ import createUserTable from './migration/createUserTable';
   imports: [
     koa,
     validate,
+    crossDomain,
     {
       component: info,
       enabledEnvironment: ['local'],
