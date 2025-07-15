@@ -1,15 +1,15 @@
-// src/service/user.service.ts
+// src_backend/service/user.service.ts
 import { Provide } from '@midwayjs/core';
 import dbPromise from '../database/sqlite';
 
 @Provide()
 export class UserService {
-  async register(nickname: string, name: string, phone: string, email: string, password: string) {
+  async register(nickname: string, name: string, phone: string, email: string, password: string, role: string) {
     const db = await dbPromise;
     const result = await db.run(`
-      INSERT INTO users (nickname, name, phone, email, password)
-      VALUES (?,?,?,?,?)
-    `, [nickname, name, phone, email, password]);
+      INSERT INTO users (nickname, name, phone, email, password, role)
+      VALUES (?,?,?,?,?,?)
+    `, [nickname, name, phone, email, password, role]);
     return result.lastID;
   }
 

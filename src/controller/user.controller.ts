@@ -1,4 +1,4 @@
-// src/controller/user.controller.ts
+// src_backend/controller/user.controller.ts
 import { Body, Controller, Post, Inject } from "@midwayjs/core";
 import { UserService } from "../service/user.service";
 
@@ -14,13 +14,14 @@ export class UserController {
     @Body("phone") phone: string,
     @Body("email") email: string,
     @Body("password") password: string,
-    @Body("confirmPassword") confirmPassword: string
+    @Body("confirmPassword") confirmPassword: string,
+    @Body("role") role: string
   ): Promise<{ success: boolean; message: string }> {
     if (password !== confirmPassword) {
       return { success: false, message: '两次输入的密码不一致' };
     }
     try {
-      await this.userService.register(nickname, name, phone, email, password);
+      await this.userService.register(nickname, name, phone, email, password, role);
       return { success: true, message: '注册成功' };
     } catch (error) {
       return { success: false, message: '注册失败，手机号可能已被注册' };

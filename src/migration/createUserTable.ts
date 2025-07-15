@@ -1,4 +1,4 @@
-// src/migration/createUserTable.ts
+// src_backend/migration/createUserTable.ts
 import dbPromise from '../database/sqlite';
 
 async function createUserTable() {
@@ -10,7 +10,8 @@ async function createUserTable() {
         name TEXT,
         phone TEXT UNIQUE,
         email TEXT,
-        password TEXT
+        password TEXT,
+        role TEXT DEFAULT 'user'
     )
     `);
 }
