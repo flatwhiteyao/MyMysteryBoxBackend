@@ -1,6 +1,7 @@
 // src_backend/controller/blindBox.controller.ts
 import { Controller, Get, Post, Del, Put, Query, Inject } from "@midwayjs/core";
 import { BlindBoxService } from "../service/blindBox.service";
+import { BlindBoxStyleService } from "../service/blindBoxStyle.service";
 import { Context } from "@midwayjs/koa";
 import formidable from 'formidable';
 import * as path from 'path';
@@ -15,17 +16,20 @@ export class BlindBoxController {
   @Inject()
   blindBoxService: BlindBoxService;
 
+  @Inject()
+  blindBoxStyleService: BlindBoxStyleService;
+
   @Get("/")
   public async getAllBlindBoxes() {
     const blindBoxes = await this.blindBoxService.getAllBlindBoxes();
-    console.log('返回的盲盒数据:', blindBoxes); // 添加调试日志
+    console.log('返回的盲盒数据:', blindBoxes);
     return { success: true, blindBoxes };
   }
 
   @Post("/")
   public async addBlindBox(ctx: Context) {
     try {
-      const form = formidable({ multiples: false });
+      const form = formidable({ multiples: true });
 
       const { fields, files } = await new Promise<{ fields: any; files: any }>((resolve, reject) => {
         form.parse(ctx.req, (err, fields, files) => {
@@ -87,6 +91,39 @@ export class BlindBoxController {
         photoPath
       );
 
+      // 处理盲盒款式信息
+      const styleNames = Array.isArray(fields.styleName) ? fields.styleName : [fields.styleName];
+      const styleProbabilities = Array.isArray(fields.styleProbability) ? fields.styleProbability : [fields.styleProbability];
+      const stylePhotos = Array.isArray(files.stylePhoto) ? files.stylePhoto : [files.stylePhoto];
+
+      const styles = [];
+      for (let i = 0; i < styleNames.length; i++) {
+        const styleName = styleNames[i]?.toString().trim() || '';
+        const styleProbability = parseFloat(styleProbabilities[i]?.toString() || '0');
+        const stylePhotoFile = stylePhotos[i];
+
+        if (styleName &&!isNaN(styleProbability) && styleProbability > 0 && stylePhotoFile) {
+          const fileExt = path.extname(stylePhotoFile.originalFilename);
+          const fileName = `${Date.now()}_style_${i}${fileExt}`;
+          const publicDir = path.join(__dirname, '../../public/uploads');
+          const filePath = path.join(publicDir, fileName);
+
+          if (!fs.existsSync(publicDir)) {
+            fs.mkdirSync(publicDir, { recursive: true });
+          }
+
+          await copyFile(stylePhotoFile.filepath, filePath);
+          await unlink(stylePhotoFile.filepath);
+
+          const stylePhotoPath = `uploads/${fileName}`;
+          styles.push({ name: styleName, photo: stylePhotoPath, probability: styleProbability });
+        }
+      }
+
+      if (styles.length > 0) {
+        await this.blindBoxStyleService.addBlindBoxStyles(id, styles);
+      }
+
       ctx.body = { success: true, id };
     } catch (error) {
       console.error('添加盲盒错误:', error);
@@ -95,31 +132,32 @@ export class BlindBoxController {
   }
 
   @Del("/")
-public async deleteBlindBox(@Query("id") id: number, ctx: Context) {
-  try {
-    // 获取盲盒信息以删除关联的照片
-    const db = await (await import('../database/sqlite')).default;
-    const blindBox = await db.get('SELECT photo FROM blind_boxes WHERE id =?', [id]);
+  public async deleteBlindBox(@Query("id") id: number, ctx: Context) {
+    try {
+      // 获取盲盒信息以删除关联的照片
+      const db = await (await import('../database/sqlite')).default;
+      const blindBox = await db.get('SELECT photo FROM blind_boxes WHERE id =?', [id]);
 
-    // 删除物理文件
-    if (blindBox && blindBox.photo) {
-      const filePath = path.join(__dirname, '../../public', blindBox.photo);
-      if (fs.existsSync(filePath)) {
-        await unlink(filePath);
+      // 删除物理文件
+      if (blindBox && blindBox.photo) {
+        const filePath = path.join(__dirname, '../../public', blindBox.photo);
+        if (fs.existsSync(filePath)) {
+          await unlink(filePath);
+        }
       }
-    }
 
-    await this.blindBoxService.deleteBlindBox(id);
-    
-    // 设置HTTP状态码为200，并返回标准成功响应
-    ctx.status = 200;
-    return { success: true, message: '删除成功' };
-  } catch (error) {
-    console.error('删除盲盒错误:', error);
-    ctx.status = 500; // 明确设置错误状态码
-    return { success: false, message: '删除盲盒失败，请重试' };
+      await this.blindBoxService.deleteBlindBox(id);
+      
+      // 设置HTTP状态码为200，并返回标准成功响应
+      ctx.status = 200;
+      return { success: true, message: '删除成功' };
+    } catch (error) {
+      console.error('删除盲盒错误:', error);
+      ctx.status = 500; // 明确设置错误状态码
+      return { success: false, message: '删除盲盒失败，请重试' };
+    }
   }
-}
+
   @Put("/")
   public async updateBlindBox(ctx: Context) {
     try {
@@ -193,6 +231,22 @@ public async deleteBlindBox(@Query("id") id: number, ctx: Context) {
     } catch (error) {
       console.error('更新盲盒错误:', error);
       ctx.body = { success: false, message: '更新盲盒失败，请重试' };
+    }
+  }
+
+  @Get("/styles")
+  public async getBlindBoxStyles(@Query("id") id: number) {
+    const styles = await this.blindBoxStyleService.getBlindBoxStyles(id);
+    return { success: true, styles };
+  }
+
+  @Get("/draw")
+  public async randomDraw(@Query("id") id: number) {
+    const result = await this.blindBoxStyleService.randomDraw(id);
+    if (result) {
+      return { success: true, style: result };
+    } else {
+      return { success: false, message: '抽取失败' };
     }
   }
 }

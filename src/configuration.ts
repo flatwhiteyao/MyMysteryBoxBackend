@@ -4,11 +4,12 @@ import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
 import * as crossDomain from '@midwayjs/cross-domain';
-import * as serveStatic from 'koa-static'; // 引入 koa-static
+import * as serveStatic from 'koa-static';
 import { join } from 'path';
 import { ReportMiddleware } from './middleware/report.middleware';
 import createUserTable from './migration/createUserTable';
 import createBlindBoxTable from './migration/createBlindBoxTable';
+import createBlindBoxStyleTable from './migration/createBlindBoxStyleTable';
 
 @Configuration({
   imports: [
@@ -30,6 +31,7 @@ export class MainConfiguration {
     // 执行数据库迁移
     await createUserTable();
     await createBlindBoxTable();
+    await createBlindBoxStyleTable();
     
     // 注册中间件
     this.app.useMiddleware([ReportMiddleware]);
