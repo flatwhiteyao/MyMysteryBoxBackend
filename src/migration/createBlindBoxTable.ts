@@ -8,7 +8,8 @@ async function createBlindBoxTable() {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
         description TEXT,
-        price REAL
+        price REAL,
+        photo TEXT
     )
     `);
 }

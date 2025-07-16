@@ -10,12 +10,12 @@ export class BlindBoxService {
     return blindBoxes;
   }
 
-  async addBlindBox(name: string, description: string, price: number) {
+  async addBlindBox(name: string, description: string, price: number, photo: string) {
     const db = await dbPromise;
     const result = await db.run(`
-      INSERT INTO blind_boxes (name, description, price)
-      VALUES (?,?,?)
-    `, [name, description, price]);
+      INSERT INTO blind_boxes (name, description, price, photo)
+      VALUES (?,?,?,?)
+    `, [name, description, price, photo]);
     return result.lastID;
   }
 
@@ -24,12 +24,20 @@ export class BlindBoxService {
     await db.run('DELETE FROM blind_boxes WHERE id =?', [id]);
   }
 
-  async updateBlindBox(id: number, name: string, description: string, price: number) {
+  async updateBlindBox(id: number, name: string, description: string, price: number, photo: string) {
     const db = await dbPromise;
-    await db.run(`
-      UPDATE blind_boxes
-      SET name =?, description =?, price =?
-      WHERE id =?
-    `, [name, description, price, id]);
+    if (photo) {
+      await db.run(`
+        UPDATE blind_boxes
+        SET name =?, description =?, price =?, photo =?
+        WHERE id =?
+      `, [name, description, price, photo, id]);
+    } else {
+      await db.run(`
+        UPDATE blind_boxes
+        SET name =?, description =?, price =?
+        WHERE id =?
+      `, [name, description, price, id]);
+    }
   }
 }

@@ -4,6 +4,7 @@ import * as koa from '@midwayjs/koa';
 import * as validate from '@midwayjs/validate';
 import * as info from '@midwayjs/info';
 import * as crossDomain from '@midwayjs/cross-domain';
+import * as serveStatic from 'koa-static'; // 引入 koa-static
 import { join } from 'path';
 import { ReportMiddleware } from './middleware/report.middleware';
 import createUserTable from './migration/createUserTable';
@@ -29,9 +30,11 @@ export class MainConfiguration {
     // 执行数据库迁移
     await createUserTable();
     await createBlindBoxTable();
-    // add middleware
+    
+    // 注册中间件
     this.app.useMiddleware([ReportMiddleware]);
-    // add filter
-    // this.app.useFilter([NotFoundFilter, DefaultErrorFilter]);
+    
+    // 配置静态文件服务 (使用 koa-static)
+    this.app.use(serveStatic(join(__dirname, '../public')));
   }
 }

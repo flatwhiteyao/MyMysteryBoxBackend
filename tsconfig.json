@@ -6,7 +6,7 @@
     "moduleResolution": "node",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "inlineSourceMap":true,
+    "inlineSourceMap": true,
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "stripInternal": true,
@@ -14,15 +14,27 @@
     "pretty": true,
     "declaration": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": [ "./typings", "./node_modules/@types"],
+    "typeRoots": [
+      "./typings",
+      "./node_modules/@types"
+    ],
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": [
+      "node",
+      "@midwayjs/core",
+      "@midwayjs/koa",
+      "@midwayjs/static-file"
+    ]
   },
   "exclude": [
-    "*.js",
-    "*.ts",
     "dist",
     "node_modules",
     "test"
-  ]
+  ],
+  "include": ["src/**/*.ts"]
 }
