@@ -26,6 +26,32 @@ export class BlindBoxController {
     return { success: true, blindBoxes };
   }
 
+  @Get("/search")
+  public async searchBlindBoxes(@Query("keyword") keyword: string) {
+    try {
+      if (!keyword || keyword.trim() === '') {
+        // 如果关键词为空，返回所有盲盒
+        const blindBoxes = await this.blindBoxService.getAllBlindBoxes();
+        return { success: true, blindBoxes, message: '显示所有盲盒' };
+      }
+
+      const searchKeyword = keyword.trim();
+      const blindBoxes = await this.blindBoxService.searchBlindBoxes(searchKeyword);
+      console.log(`搜索关键词"${searchKeyword}"的结果:`, blindBoxes);
+      
+      return { 
+        success: true, 
+        blindBoxes, 
+        keyword: searchKeyword,
+        count: blindBoxes.length,
+        message: blindBoxes.length > 0 ? `找到 ${blindBoxes.length} 个匹配的盲盒` : '未找到匹配的盲盒'
+      };
+    } catch (error) {
+      console.error('搜索盲盒错误:', error);
+      return { success: false, message: '搜索失败，请重试' };
+    }
+  }
+
   @Post("/")
   public async addBlindBox(ctx: Context) {
     try {

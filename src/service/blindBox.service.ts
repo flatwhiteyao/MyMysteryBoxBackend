@@ -10,6 +10,17 @@ export class BlindBoxService {
     return blindBoxes;
   }
 
+  async searchBlindBoxes(keyword: string) {
+    const db = await dbPromise;
+    const searchKeyword = `%${keyword}%`;
+    const blindBoxes = await db.all(`
+      SELECT * FROM blind_boxes 
+      WHERE name LIKE ? OR description LIKE ?
+      ORDER BY id DESC
+    `, [searchKeyword, searchKeyword]);
+    return blindBoxes;
+  }
+
   async addBlindBox(name: string, description: string, price: number, photo: string) {
     const db = await dbPromise;
     const result = await db.run(`
