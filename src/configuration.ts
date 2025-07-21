@@ -8,7 +8,7 @@ import * as serveStatic from 'koa-static';
 import { join } from 'path';
 import { ReportMiddleware } from './middleware/report.middleware';
 import createUserTable from './migration/createUserTable';
-import createBlindBoxTable from './migration/createBlindBoxTable';
+import { up as createBlindBoxTable } from './migration/createBlindBoxTable';
 import createBlindBoxStyleTable from './migration/createBlindBoxStyleTable';
 
 @Configuration({

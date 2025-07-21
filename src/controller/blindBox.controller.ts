@@ -2,6 +2,7 @@
 import { Controller, Get, Post, Del, Put, Query, Inject } from "@midwayjs/core";
 import { BlindBoxService } from "../service/blindBox.service";
 import { BlindBoxStyleService } from "../service/blindBoxStyle.service";
+import { UserDrawnBlindBoxService } from "../service/userDrawnBlindBox.service";
 import { Context } from "@midwayjs/koa";
 import formidable from 'formidable';
 import * as path from 'path';
@@ -18,6 +19,10 @@ export class BlindBoxController {
 
   @Inject()
   blindBoxStyleService: BlindBoxStyleService;
+
+  @Inject()
+    userDrawnBlindBoxService: UserDrawnBlindBoxService; // 新增注入
+
 
   @Get("/")
   public async getAllBlindBoxes() {
@@ -266,13 +271,15 @@ export class BlindBoxController {
     return { success: true, styles };
   }
 
+
   @Get("/draw")
-  public async randomDraw(@Query("id") id: number) {
-    const result = await this.blindBoxStyleService.randomDraw(id);
-    if (result) {
-      return { success: true, style: result };
-    } else {
-      return { success: false, message: '抽取失败' };
+    public async randomDraw(@Query("id") id: number, @Query("user_id") user_id: number) { // 新增 user_id 参数
+        const result = await this.blindBoxStyleService.randomDraw(id);
+        if (result) {
+            await this.userDrawnBlindBoxService.addUserDrawnBlindBox(user_id, id, result.id); // 记录抽中信息
+            return { success: true, style: result };
+        } else {
+            return { success: false, message: '抽取失败' };
+        }
     }
-  }
 }
