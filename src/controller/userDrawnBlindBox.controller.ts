@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Inject, Post, Body } from "@midwayjs/core";
+import { Controller, Get, Query, Inject, Del, Param } from "@midwayjs/core";
 import { UserDrawnBlindBoxService } from "../service/userDrawnBlindBox.service";
 
 @Controller("/user-drawn-blind-boxes")
@@ -12,8 +12,8 @@ export class UserDrawnBlindBoxController {
         return { success: true, drawnBlindBoxes };
     }
 
-    @Post("/user-delete-drawn-blind-box")
-    public async deleteUserDrawnBlindBox(@Body("id") id: number) {
+    @Del("/:id")
+    public async deleteUserDrawnBlindBox(@Param("id") id: number) {
         if (!id) {
             return { success: false, message: "缺少id参数" };
         }
