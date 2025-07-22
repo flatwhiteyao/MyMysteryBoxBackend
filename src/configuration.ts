@@ -10,6 +10,7 @@ import { ReportMiddleware } from './middleware/report.middleware';
 import createUserTable from './migration/createUserTable';
 import  createBlindBoxTable from './migration/createBlindBoxTable';
 import createBlindBoxStyleTable from './migration/createBlindBoxStyleTable';
+import createUserDrawnBlindBoxTable from './migration/createUserDrawnBlindBoxTable';
 
 @Configuration({
   imports: [
@@ -32,6 +33,7 @@ export class MainConfiguration {
     await createUserTable();
     await createBlindBoxTable();
     await createBlindBoxStyleTable();
+    await createUserDrawnBlindBoxTable();
     
     // 注册中间件
     this.app.useMiddleware([ReportMiddleware]);
