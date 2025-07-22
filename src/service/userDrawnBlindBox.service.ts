@@ -29,4 +29,13 @@ export class UserDrawnBlindBoxService {
       [user_id]
     );
   }
+
+  // 删除：根据id删除用户抽到的盲盒款式
+  async deleteUserDrawnBlindBox(id: number) {
+    const db = await dbPromise;
+    await db.run(
+      `DELETE FROM user_drawn_blind_boxes WHERE id = ?`,
+      [id]
+    );
+  }
 }
