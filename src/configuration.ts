@@ -11,6 +11,7 @@ import createUserTable from './migration/createUserTable';
 import  createBlindBoxTable from './migration/createBlindBoxTable';
 import createBlindBoxStyleTable from './migration/createBlindBoxStyleTable';
 import createUserDrawnBlindBoxTable from './migration/createUserDrawnBlindBoxTable';
+import createPlayerShowTable from './migration/createPlayerShowTable';
 
 @Configuration({
   imports: [
@@ -34,6 +35,7 @@ export class MainConfiguration {
     await createBlindBoxTable();
     await createBlindBoxStyleTable();
     await createUserDrawnBlindBoxTable();
+    await createPlayerShowTable();
     
     // 注册中间件
     this.app.useMiddleware([ReportMiddleware]);
