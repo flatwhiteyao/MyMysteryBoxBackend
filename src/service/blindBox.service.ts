@@ -51,4 +51,9 @@ export class BlindBoxService {
       `, [name, description, price, id]);
     }
   }
+
+  async getLatestBlindBox() {
+    const db = await dbPromise;
+    return await db.get('SELECT * FROM blind_boxes ORDER BY id DESC LIMIT 1');
+  }
 }
