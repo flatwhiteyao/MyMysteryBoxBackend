@@ -48,4 +48,18 @@ export class PlayerShowService {
       await db.run('DELETE FROM player_shows WHERE id = ? AND user_id = ?', [id, user_id]);
     }
   }
+
+  // 获取盲盒排行榜（按平均评分降序）
+  async getBlindBoxRanking(limit: number = 10) {
+    const db = await dbPromise;
+    return await db.all(`
+      SELECT bb.id, bb.name, bb.photo, bb.description, AVG(ps.rating) as avg_rating, COUNT(ps.id) as show_count
+      FROM blind_boxes bb
+      JOIN player_shows ps ON bb.id = ps.blind_box_id
+      GROUP BY bb.id
+      HAVING show_count > 0
+      ORDER BY avg_rating DESC, show_count DESC
+      LIMIT ?
+    `, [limit]);
+  }
 } 

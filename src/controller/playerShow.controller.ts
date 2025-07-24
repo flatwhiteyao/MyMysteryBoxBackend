@@ -56,4 +56,11 @@ export class PlayerShowController {
       return { success: false, message: '删除失败' };
     }
   }
+
+  // 获取玩家秀排行榜（盲盒平均分排行）
+  @Get('/ranking')
+  async getBlindBoxRanking(@Query('limit') limit: number) {
+    const ranking = await this.playerShowService.getBlindBoxRanking(limit || 10);
+    return { success: true, ranking };
+  }
 } 
