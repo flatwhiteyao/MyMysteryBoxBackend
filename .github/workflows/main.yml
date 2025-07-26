@@ -4,10 +4,10 @@ on:
     branches: [ "main" ]
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: window-latest
     strategy:
       matrix:
-        node-version: [20.x, 22.x]
+        node-version: [22.17.0]
     steps: 
     - uses: actions/checkout@v4
     - name: Use Node.js ${{ matrix.node-version }}
