@@ -1,4 +1,13 @@
-import { Controller, Post, Get, Del, Body, Param, Inject, Query } from '@midwayjs/core';
+import {
+  Controller,
+  Post,
+  Get,
+  Del,
+  Body,
+  Param,
+  Inject,
+  Query,
+} from '@midwayjs/core';
 import { PlayerShowService } from '../service/playerShow.service';
 import { UserService } from '../service/user.service';
 
@@ -20,7 +29,13 @@ export class PlayerShowController {
     @Body('rating') rating: number
   ) {
     try {
-      await this.playerShowService.createPlayerShow(user_id, blind_box_id, content, images, rating);
+      await this.playerShowService.createPlayerShow(
+        user_id,
+        blind_box_id,
+        content,
+        images,
+        rating
+      );
       return { success: true };
     } catch (e) {
       return { success: false, message: e.message };
@@ -60,7 +75,9 @@ export class PlayerShowController {
   // 获取玩家秀排行榜（盲盒平均分排行）
   @Get('/ranking')
   async getBlindBoxRanking(@Query('limit') limit: number) {
-    const ranking = await this.playerShowService.getBlindBoxRanking(limit || 10);
+    const ranking = await this.playerShowService.getBlindBoxRanking(
+      limit || 10
+    );
     return { success: true, ranking };
   }
-} 
+}

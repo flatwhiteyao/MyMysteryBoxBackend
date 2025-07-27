@@ -1,8 +1,8 @@
 import dbPromise from '../database/sqlite';
 
 async function createPlayerShowTable() {
-    const db = await dbPromise;
-    await db.exec(`
+  const db = await dbPromise;
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS player_shows (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
@@ -17,4 +17,4 @@ async function createPlayerShowTable() {
     `);
 }
 
-export default createPlayerShowTable; 
+export default createPlayerShowTable;

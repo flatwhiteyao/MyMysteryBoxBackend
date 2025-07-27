@@ -2,8 +2,8 @@
 import dbPromise from '../database/sqlite';
 
 async function createBlindBoxStyleTable() {
-    const db = await dbPromise;
-    await db.exec(`
+  const db = await dbPromise;
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS blind_box_styles (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         blind_box_id INTEGER,

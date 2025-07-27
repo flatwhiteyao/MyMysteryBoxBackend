@@ -13,20 +13,31 @@ export class BlindBoxService {
   async searchBlindBoxes(keyword: string) {
     const db = await dbPromise;
     const searchKeyword = `%${keyword}%`;
-    const blindBoxes = await db.all(`
+    const blindBoxes = await db.all(
+      `
       SELECT * FROM blind_boxes 
       WHERE name LIKE ? OR description LIKE ?
       ORDER BY id DESC
-    `, [searchKeyword, searchKeyword]);
+    `,
+      [searchKeyword, searchKeyword]
+    );
     return blindBoxes;
   }
 
-  async addBlindBox(name: string, description: string, price: number, photo: string) {
+  async addBlindBox(
+    name: string,
+    description: string,
+    price: number,
+    photo: string
+  ) {
     const db = await dbPromise;
-    const result = await db.run(`
+    const result = await db.run(
+      `
       INSERT INTO blind_boxes (name, description, price, photo)
       VALUES (?,?,?,?)
-    `, [name, description, price, photo]);
+    `,
+      [name, description, price, photo]
+    );
     return result.lastID;
   }
 
@@ -35,20 +46,32 @@ export class BlindBoxService {
     await db.run('DELETE FROM blind_boxes WHERE id =?', [id]);
   }
 
-  async updateBlindBox(id: number, name: string, description: string, price: number, photo: string) {
+  async updateBlindBox(
+    id: number,
+    name: string,
+    description: string,
+    price: number,
+    photo: string
+  ) {
     const db = await dbPromise;
     if (photo) {
-      await db.run(`
+      await db.run(
+        `
         UPDATE blind_boxes
         SET name =?, description =?, price =?, photo =?
         WHERE id =?
-      `, [name, description, price, photo, id]);
+      `,
+        [name, description, price, photo, id]
+      );
     } else {
-      await db.run(`
+      await db.run(
+        `
         UPDATE blind_boxes
         SET name =?, description =?, price =?
         WHERE id =?
-      `, [name, description, price, id]);
+      `,
+        [name, description, price, id]
+      );
     }
   }
 

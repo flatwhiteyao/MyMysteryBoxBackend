@@ -1,8 +1,8 @@
 import dbPromise from '../database/sqlite';
 
 async function createUserDrawnBlindBoxTable() {
-    const db = await dbPromise;
-    await db.exec(`
+  const db = await dbPromise;
+  await db.exec(`
     CREATE TABLE IF NOT EXISTS user_drawn_blind_boxes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,

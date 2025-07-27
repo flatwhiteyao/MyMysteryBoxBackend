@@ -4,7 +4,11 @@ import dbPromise from '../database/sqlite';
 @Provide()
 export class UserDrawnBlindBoxService {
   // 新增：记录用户抽到的盲盒款式
-  async addUserDrawnBlindBox(user_id: number, blind_box_id: number, style_id: number) {
+  async addUserDrawnBlindBox(
+    user_id: number,
+    blind_box_id: number,
+    style_id: number
+  ) {
     const db = await dbPromise;
     await db.run(
       `INSERT INTO user_drawn_blind_boxes (user_id, blind_box_id, style_id, drawn_at)
@@ -33,9 +37,6 @@ export class UserDrawnBlindBoxService {
   // 删除：根据id删除用户抽到的盲盒款式
   async deleteUserDrawnBlindBox(id: number) {
     const db = await dbPromise;
-    await db.run(
-      `DELETE FROM user_drawn_blind_boxes WHERE id = ?`,
-      [id]
-    );
+    await db.run('DELETE FROM user_drawn_blind_boxes WHERE id = ?', [id]);
   }
 }

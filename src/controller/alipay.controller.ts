@@ -8,8 +8,16 @@ export class AlipayController {
   alipayService: AlipayService;
 
   @Get('/createOrder')
-  async createOrder(@Query('outTradeNo') outTradeNo: string, @Query('totalAmount') totalAmount: number, @Query('subject') subject: string) {
-    const result = await this.alipayService.createPaymentOrder(outTradeNo, totalAmount, subject);
+  async createOrder(
+    @Query('outTradeNo') outTradeNo: string,
+    @Query('totalAmount') totalAmount: number,
+    @Query('subject') subject: string
+  ) {
+    const result = await this.alipayService.createPaymentOrder(
+      outTradeNo,
+      totalAmount,
+      subject
+    );
     return result;
   }
 }
