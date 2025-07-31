@@ -18,7 +18,7 @@
       "./typings",
       "./node_modules/@types"
     ],
-    "outDir": "dist",
+    "outDir": "build",
     "rootDir": "src",
     "baseUrl": ".",
     "paths": {

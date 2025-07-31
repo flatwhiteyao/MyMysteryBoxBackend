@@ -1,6 +1,8 @@
 import { Controller, Get, Inject } from '@midwayjs/core';
 import { PlayerShowService } from '../service/playerShow.service';
 import { BlindBoxService } from '../service/blindBox.service';
+import { join } from 'path';
+import * as fs from 'fs';
 
 @Controller('/')
 export class HomeController {
@@ -12,7 +14,13 @@ export class HomeController {
 
   @Get('/')
   async home(): Promise<string> {
-    return 'Hello Midwayjs!';
+    try {
+      // 返回前端页面
+      const indexPath = join(__dirname, '../build/public/index.html');
+      return fs.readFileSync(indexPath, 'utf8');
+    } catch (error) {
+      return 'Hello! (Fallback)';
+    }
   }
 
   @Get('/ranking')

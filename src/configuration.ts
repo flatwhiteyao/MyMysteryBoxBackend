@@ -23,7 +23,7 @@ import createPlayerShowTable from './migration/createPlayerShowTable';
       enabledEnvironment: ['local'],
     },
   ],
-  importConfigs: [join(__dirname, './config')],
+  importConfigs: [join(__dirname, './config')]
 })
 export class MainConfiguration {
   @App('koa')
@@ -41,6 +41,20 @@ export class MainConfiguration {
     this.app.useMiddleware([ReportMiddleware]);
 
     // 配置静态文件服务 (使用 koa-static)
-    this.app.use(serveStatic(join(__dirname, '../public')));
+    this.app.use(serveStatic(join(__dirname, './public')));
+    
+    // 处理 SPA 路由 - 对于不存在的路由，返回 index.html
+    this.app.use(async (ctx, next) => {
+      await next();
+      if (ctx.status === 404 && !ctx.path.startsWith('/api')) {
+        try {
+          ctx.type = 'html';
+          ctx.body = require('fs').readFileSync(join(__dirname, './public/index.html'), 'utf8');
+        } catch (error) {
+          ctx.logger.error('Failed to serve index.html:', error);
+          ctx.status = 404;
+        }
+      }
+    });
   }
 }
